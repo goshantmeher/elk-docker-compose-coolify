@@ -1,0 +1,2 @@
+Create a docker compose file for a logstash instance that will be used to ingest logs from a filebeat instance.
+with elasticsearch and kibana.

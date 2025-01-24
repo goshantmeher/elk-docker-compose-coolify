@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  elasticsearch:
+    build:
+      context: ./elasticsearch
+      dockerfile: Dockerfile
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - elk_network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.elasticsearch.rule=Host(`elasticsearch.shopifymade.com`)"
+      - "traefik.http.services.elasticsearch.loadbalancer.server.port=9200"
+
+  kibana:
+    build:
+      context: ./kibana
+      dockerfile: Dockerfile
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - elk_network
+    depends_on:
+      - elasticsearch
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.kibana.rule=Host(`kibana.shopifymade.com`)"
+      - "traefik.http.services.kibana.loadbalancer.server.port=5601"
+
+  logstash:
+    build:
+      context: ./logstash
+      dockerfile: Dockerfile
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+    ports:
+      - "5044:5044"
+      - "5000:5000"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elk_network
+    depends_on:
+      - elasticsearch
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.logstash.rule=Host(`logstash.shopifymade.com`)"
+      - "traefik.http.services.logstash.loadbalancer.server.port=5000"
+
+  filebeat:
+    build:
+      context: ./filebeat
+      dockerfile: Dockerfile
+    user: root
+    depends_on:
+      - logstash
+    networks:
+      - elk_network
+
+  redis:
+    build:
+      context: ./redis
+      dockerfile: Dockerfile
+    ports:
+      - "6379:6379"
+    networks:
+      - elk_network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.redis.rule=Host(`redis.shopifymade.com`)"
+      - "traefik.http.services.redis.loadbalancer.server.port=6379"
+
+  rabbitmq:
+    build:
+      context: ./rabbitmq
+      dockerfile: Dockerfile
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - elk_network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.shopifymade.com`)"
+      - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
+      - "traefik.http.routers.rabbitmq-amqp.rule=Host(`rabbitmq-amqp.shopifymade.com`)"
+      - "traefik.http.services.rabbitmq-amqp.loadbalancer.server.port=5672"
+
+networks:
+  elk_network:
+    driver: bridge
+
+volumes:
+  elasticsearch_data:
