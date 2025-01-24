@@ -20,6 +20,4 @@ logging.files:
 # Enable monitoring
 monitoring.enabled: true
 monitoring.elasticsearch:
-  hosts: ["elasticsearch:9200"]
-  username: "beats_system"
-  password: "${ELASTIC_PASSWORD}" 
+  hosts: ["elasticsearch:9200"] 
