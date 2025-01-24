@@ -1,8 +1,8 @@
 cluster.name: "docker-cluster"
 network.host: 0.0.0.0
-xpack.security.enabled: true
-xpack.security.authc.api_key.enabled: true
-xpack.security.transport.ssl.enabled: true
-xpack.security.transport.ssl.verification_mode: certificate
-xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
-xpack.security.transport.ssl.truststore.path: elastic-certificates.p12 
+xpack.security.enabled: false
+xpack.security.authc.api_key.enabled: false
+
+# Disable SSL for development (not recommended for production)
+xpack.security.transport.ssl.enabled: false
+xpack.security.http.ssl.enabled: false 

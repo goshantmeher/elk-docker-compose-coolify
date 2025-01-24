@@ -1,4 +1,7 @@
 FROM redis:7-alpine
 
-# Add any custom configurations if needed
-COPY redis.conf /usr/local/etc/redis/redis.conf 
+# Add custom configurations
+COPY redis.conf /usr/local/etc/redis/redis.conf
+
+# Use custom config file
+CMD ["redis-server", "/usr/local/etc/redis/redis.conf"] 
