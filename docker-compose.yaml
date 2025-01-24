@@ -17,7 +17,7 @@ services:
       - elk_network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.elasticsearch.rule=Host(`elasticsearch.shopifymade.com`)"
+      - "traefik.http.routers.elasticsearch.rule=Host(`elasticsearch.appius.pro`)"
       - "traefik.http.services.elasticsearch.loadbalancer.server.port=9200"
 
   kibana:
@@ -34,7 +34,7 @@ services:
       - elasticsearch
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.kibana.rule=Host(`kibana.shopifymade.com`)"
+      - "traefik.http.routers.kibana.rule=Host(`kibana.appius.pro`)"
       - "traefik.http.services.kibana.loadbalancer.server.port=5601"
 
   logstash:
@@ -56,7 +56,7 @@ services:
       - elasticsearch
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.logstash.rule=Host(`logstash.shopifymade.com`)"
+      - "traefik.http.routers.logstash.rule=Host(`logstash.appius.pro`)"
       - "traefik.http.services.logstash.loadbalancer.server.port=5000"
 
   filebeat:
@@ -79,7 +79,7 @@ services:
       - elk_network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.redis.rule=Host(`redis.shopifymade.com`)"
+      - "traefik.http.routers.redis.rule=Host(`redis.appius.pro`)"
       - "traefik.http.services.redis.loadbalancer.server.port=6379"
 
   rabbitmq:
@@ -96,9 +96,9 @@ services:
       - elk_network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.shopifymade.com`)"
+      - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.appius.pro`)"
       - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
-      - "traefik.http.routers.rabbitmq-amqp.rule=Host(`rabbitmq-amqp.shopifymade.com`)"
+      - "traefik.http.routers.rabbitmq-amqp.rule=Host(`rabbitmq-amqp.appius.pro`)"
       - "traefik.http.services.rabbitmq-amqp.loadbalancer.server.port=5672"
 
 networks:
