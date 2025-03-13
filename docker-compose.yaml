@@ -65,18 +65,18 @@ services:
     networks:
       - elk_network
 
-  redis:
-    build:
-      context: ./redis
-      dockerfile: Dockerfile
-    ports:
-      - "6379:6379"
-    networks:
-      - elk_network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.redis.rule=Host(`redis.appius.pro`)"
-      - "traefik.http.services.redis.loadbalancer.server.port=6379"
+  # redis:
+  #   build:
+  #     context: ./redis
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "6379:6379"
+  #   networks:
+  #     - elk_network
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.redis.rule=Host(`redis.appius.pro`)"
+  #     - "traefik.http.services.redis.loadbalancer.server.port=6379"
 
   rabbitmq:
     build:
