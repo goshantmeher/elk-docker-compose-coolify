@@ -26,6 +26,9 @@ services:
       dockerfile: Dockerfile
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD:-}
+      - server.publicBaseUrl=https://kibana.appius.pro
     ports:
       - "5601:5601"
     networks:
@@ -65,19 +68,6 @@ services:
       - logstash
     networks:
       - elk_network
-
-  # redis:
-  #   build:
-  #     context: ./redis
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "6379:6379"
-  #   networks:
-  #     - elk_network
-  #   labels:
-  #     - "traefik.enable=true"
-  #     - "traefik.http.routers.redis.rule=Host(`redis.appius.pro`)"
-  #     - "traefik.http.services.redis.loadbalancer.server.port=6379"
 
   rabbitmq:
     build:
