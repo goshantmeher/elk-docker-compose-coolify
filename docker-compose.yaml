@@ -12,7 +12,7 @@ services:
     ports:
       - "9200:9200"
     volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
+      - /data/elasticsearch:/usr/share/elasticsearch/data
     networks:
       - elk_network
     labels:
@@ -93,5 +93,3 @@ networks:
   elk_network:
     driver: bridge
 
-volumes:
-  elasticsearch_data:
