@@ -5,6 +5,7 @@ services:
     build:
       context: ./elasticsearch
       dockerfile: Dockerfile
+    restart: unless-stopped
     environment:
       - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
@@ -12,7 +13,7 @@ services:
     ports:
       - "9200:9200"
     volumes:
-      - /data/elasticsearch:/usr/share/elasticsearch/data
+      - elasticsearch_data:/usr/share/elasticsearch/data
     networks:
       - elk_network
     labels:
@@ -24,6 +25,7 @@ services:
     build:
       context: ./kibana
       dockerfile: Dockerfile
+    restart: unless-stopped
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
       - ELASTICSEARCH_USERNAME=kibana_system
@@ -44,6 +46,7 @@ services:
     build:
       context: ./logstash
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
       - "5044:5044"
       - "5000:5000"
@@ -63,6 +66,7 @@ services:
     build:
       context: ./filebeat
       dockerfile: Dockerfile
+    restart: unless-stopped
     user: root
     depends_on:
       - logstash
@@ -73,12 +77,15 @@ services:
     build:
       context: ./rabbitmq
       dockerfile: Dockerfile
+    restart: unless-stopped
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=admin
     ports:
       - "5672:5672"
       - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
     networks:
       - elk_network
     labels:
@@ -92,4 +99,10 @@ services:
 networks:
   elk_network:
     driver: bridge
+
+volumes:
+  elasticsearch_data:
+    name: elasticsearch_data
+  rabbitmq_data:
+    name: rabbitmq_data
 
