@@ -15,8 +15,6 @@ services:
       - /data/elasticsearch:/usr/share/elasticsearch/data
     networks:
       - elk_network
-    labels:
-      - "traefik.enable=false"
 
   kibana:
     build:
@@ -26,15 +24,11 @@ services:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
       - ELASTICSEARCH_USERNAME=kibana_system
       - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
-      - server.publicBaseUrl=https://kibana.appius.pro
+      - server.publicBaseUrl=https://kibana.shopme.blog
     networks:
       - elk_network
     depends_on:
       - elasticsearch
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.kibana.rule=Host(`kibana.appius.pro`)"
-      - "traefik.http.services.kibana.loadbalancer.server.port=5601"
 
   logstash:
     build:
@@ -47,8 +41,6 @@ services:
       - elk_network
     depends_on:
       - elasticsearch
-    labels:
-      - "traefik.enable=false"
 
   filebeat:
     build:
@@ -74,10 +66,6 @@ services:
       - "127.0.0.1:15672:15672"
     networks:
       - elk_network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.appius.pro`)"
-      - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
 
 networks:
   elk_network:
