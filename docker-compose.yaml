@@ -8,17 +8,15 @@ services:
     environment:
       - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD:-}
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
     ports:
-      - "9200:9200"
+      - "127.0.0.1:9200:9200"
     volumes:
       - /data/elasticsearch:/usr/share/elasticsearch/data
     networks:
       - elk_network
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.elasticsearch.rule=Host(`elasticsearch.appius.pro`)"
-      - "traefik.http.services.elasticsearch.loadbalancer.server.port=9200"
+      - "traefik.enable=false"
 
   kibana:
     build:
@@ -27,10 +25,8 @@ services:
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
       - ELASTICSEARCH_USERNAME=kibana_system
-      - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD:-}
+      - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
       - server.publicBaseUrl=https://kibana.appius.pro
-    ports:
-      - "5601:5601"
     networks:
       - elk_network
     depends_on:
@@ -44,26 +40,23 @@ services:
     build:
       context: ./logstash
       dockerfile: Dockerfile
-    ports:
-      - "5044:5044"
-      - "5000:5000"
-      - "9600:9600"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
     networks:
       - elk_network
     depends_on:
       - elasticsearch
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.logstash.rule=Host(`logstash.appius.pro`)"
-      - "traefik.http.services.logstash.loadbalancer.server.port=5000"
+      - "traefik.enable=false"
 
   filebeat:
     build:
       context: ./filebeat
       dockerfile: Dockerfile
     user: root
+    environment:
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
     depends_on:
       - logstash
     networks:
@@ -74,22 +67,18 @@ services:
       context: ./rabbitmq
       dockerfile: Dockerfile
     environment:
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=admin
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-admin}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"
     networks:
       - elk_network
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.appius.pro`)"
       - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
-      - "traefik.http.routers.rabbitmq-amqp.rule=Host(`rabbitmq-amqp.appius.pro`)"
-      - "traefik.http.services.rabbitmq-amqp.loadbalancer.server.port=5672"
-      - "traefik.http.routers.rabbitmq-amqp.middlewares=auth"
 
 networks:
   elk_network:
     driver: bridge
-

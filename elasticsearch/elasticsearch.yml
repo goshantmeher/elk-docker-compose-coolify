@@ -1,8 +1,10 @@
 cluster.name: "docker-cluster"
 network.host: 0.0.0.0
-xpack.security.enabled: false
-xpack.security.authc.api_key.enabled: false
 
-# Disable SSL for development (not recommended for production)
+# Security — native realm with password auth
+xpack.security.enabled: true
+xpack.security.authc.api_key.enabled: true
+
+# SSL not needed for intra-Docker traffic (containers talk over elk_network)
 xpack.security.transport.ssl.enabled: false
 xpack.security.http.ssl.enabled: false 

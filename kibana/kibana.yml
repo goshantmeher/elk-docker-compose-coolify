@@ -1,8 +1,9 @@
 server.name: kibana
 server.host: "0.0.0.0"
 elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+elasticsearch.username: "kibana_system"
+elasticsearch.password: "${ELASTICSEARCH_PASSWORD}"
 monitoring.ui.container.elasticsearch.enabled: true
 
-# Add these lines for troubleshooting
-logging.root.level: debug
+logging.root.level: info
 elasticsearch.requestTimeout: 90000 
