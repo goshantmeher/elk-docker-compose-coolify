@@ -1,1 +1,3 @@
 .env
+WireGuard/wg0.conf
+*.key

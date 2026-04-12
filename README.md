@@ -14,11 +14,11 @@ mkdir -p /data/elasticsearch && chown -R 1000:1000 /data/elasticsearch
 
 Set these in Coolify → Service → Environment Variables before deploying:
 
-| Variable | Description |
-|---|---|
+| Variable           | Description                                                 |
+| ------------------ | ----------------------------------------------------------- |
 | `ELASTIC_PASSWORD` | Password for the `elastic` superuser and all built-in users |
-| `RABBITMQ_USER` | RabbitMQ admin username (default: `admin`) |
-| `RABBITMQ_PASS` | RabbitMQ admin password |
+| `RABBITMQ_USER`    | RabbitMQ admin username (default: `admin`)                  |
+| `RABBITMQ_PASS`    | RabbitMQ admin password                                     |
 
 ## Post-Deploy: Set Built-in User Passwords
 
@@ -26,13 +26,13 @@ After every fresh deploy (or password change), SSH into the VPS and set password
 
 ```bash
 # Set kibana_system password
-curl -s -X POST "http://127.0.0.1:9200/_security/user/kibana_system/_password" -H "Content-Type: application/json" -u 'elastic:YOUR_PASSWORD' -d '{"password": "YOUR_PASSWORD"}'
+curl -s -X POST "http://127.0.0.1:9200/_security/user/kibana_system/_password" -H "Content-Type: application/json" -u 'elastic:`X|J5qw8HNQg9$#y;<te' -d '{"password": "`X|J5qw8HNQg9$#y;<te"}'
 
 # Set logstash_system password
-curl -s -X POST "http://127.0.0.1:9200/_security/user/logstash_system/_password" -H "Content-Type: application/json" -u 'elastic:YOUR_PASSWORD' -d '{"password": "YOUR_PASSWORD"}'
+curl -s -X POST "http://127.0.0.1:9200/_security/user/logstash_system/_password" -H "Content-Type: application/json" -u 'elastic:`X|J5qw8HNQg9$#y;<te' -d '{"password": "`X|J5qw8HNQg9$#y;<te"}'
 
 # Set beats_system password (for filebeat)
-curl -s -X POST "http://127.0.0.1:9200/_security/user/beats_system/_password" -H "Content-Type: application/json" -u 'elastic:YOUR_PASSWORD' -d '{"password": "YOUR_PASSWORD"}'
+curl -s -X POST "http://127.0.0.1:9200/_security/user/beats_system/_password" -H "Content-Type: application/json" -u 'elastic:`X|J5qw8HNQg9$#y;<te' -d '{"password": "`X|J5qw8HNQg9$#y;<te"}'
 ```
 
 Each command should return `{}` on success.
@@ -78,10 +78,10 @@ POST /api/admin/search/reindex
 
 ## Troubleshooting
 
-| Symptom | Fix |
-|---|---|
-| Kibana: "server is not ready yet" | `kibana_system` password not set. Run the post-deploy password commands above. |
-| Kibana: "License is not available" | Run the license activation command above. |
-| Kibana: plugin load error in browser | Hard refresh (`Cmd+Shift+R`) or open in incognito. Stale browser cache. |
-| `index_not_found_exception` on backend | ES indices were wiped. Trigger a reindex from admin endpoint. |
-| Can't connect to ES from local dev | Start SSH tunnel first (see above). |
+| Symptom                                | Fix                                                                            |
+| -------------------------------------- | ------------------------------------------------------------------------------ |
+| Kibana: "server is not ready yet"      | `kibana_system` password not set. Run the post-deploy password commands above. |
+| Kibana: "License is not available"     | Run the license activation command above.                                      |
+| Kibana: plugin load error in browser   | Hard refresh (`Cmd+Shift+R`) or open in incognito. Stale browser cache.        |
+| `index_not_found_exception` on backend | ES indices were wiped. Trigger a reindex from admin endpoint.                  |
+| Can't connect to ES from local dev     | Start SSH tunnel first (see above).                                            |

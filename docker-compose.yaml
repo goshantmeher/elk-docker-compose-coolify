@@ -10,7 +10,7 @@ services:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
     ports:
-      - "127.0.0.1:9200:9200"
+      - "9200:9200"
     volumes:
       - /data/elasticsearch:/usr/share/elasticsearch/data
     networks:
@@ -62,8 +62,8 @@ services:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-admin}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
     ports:
-      - "127.0.0.1:5672:5672"
-      - "127.0.0.1:15672:15672"
+      - "5672:5672"
+      - "15672:15672"
     networks:
       - elk_network
 
